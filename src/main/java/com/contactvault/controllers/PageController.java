@@ -50,7 +50,7 @@ public class PageController {
     }
 
 
-    @GetMapping("/contact")
+    @RequestMapping("/contact")
     public String contactPage(){
         System.out.println("contact us page loading");
         return "contact";

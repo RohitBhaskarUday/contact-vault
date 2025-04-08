@@ -5,15 +5,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign-Up</title>
+    <title>Login</title>
 
 </head>
 <body>
 <div id="content">
-    <h1>Welcome to the Login Page</h1>
-    <p>
-        Contact Vault helps in saving your contacts and is built on a robust backend.
-    </p>
+    <div class="grid grid-cols-12 mt-5">
+        <div class="col-span-4 md:col-span-2 lg:col-span-2 xl:col-span-4"></div>
+        <div class="col-span-12 md:col-span-8 lg:col-span-6 xl:col-span-4">
+            <!--            this is my card-->
+            <div class="block p-6 border-t-8 border-b-8 bg-gray-500 border-green-800 rounded-lg shadow-sm dark:bg-gray-800 dark:border-green-900">
+                <!--                message comes here-->
+                <div data-th-replace="~{message::messagebox}"></div>
+                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Login Here</h5>
+                <p class="font-normal text-gray-700 dark:text-gray-400"> and start saving your contacts at one place.</p>
+                <!--                now begins the user details collection-->
+                <div class="text-red-600 text-center m-3" th:if="${param.error}"> Invalid username and password. </div>
+                <div class="text-green-600 text-center m-3" th:if="${param.logout}"> You have been logged out.</div>
+                <form data-th-action="@{'/authenticate'}" method="post" class="mt-5">
+                    <!--                    user name-->
+                    <div class="mb-4">
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                           Email
+                        </label>
+                        <input type="email" id="email" name="email"
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               placeholder="xyz@youremail.com" required/>
+                        <p class="text-red-400 px-1 py-2"></p>
+                    </div>
+                    <!--                    password-->
+                    <div class="mb-4">
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Password
+                        </label>
+                        <input type="password" id="password" name="password"
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               placeholder="Enter Password" required />
+                        <p class="text-red-400 px-1 py-2"></p>
+                    </div>
+                    <!--                    button-->
+                    <div class="mb-4 flex justify-center space-x-3">
+                        <button type="submit" class="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
+                            Login
+                        </button>
+                        <button type="reset" class="px-3 py-2 rounded bg-sky-400 text-white hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-600 focus:ring-4 focus:ring-sky-300 dark:focus:ring-sky-800">
+                            Clear
+                        </button>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 <script>
     console.log("signup page");

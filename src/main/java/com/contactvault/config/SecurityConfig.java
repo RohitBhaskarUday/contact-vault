@@ -2,6 +2,9 @@ package com.contactvault.config;
 
 
 import com.contactvault.services.SecurityCustomUserDetailService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,9 +12,16 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import java.io.IOException;
 
 
 @Configuration
@@ -48,8 +58,6 @@ public class SecurityConfig {
         this.userDetailService=userDetailService;
     }
 
-
-
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -64,7 +72,6 @@ public class SecurityConfig {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -81,7 +88,39 @@ public class SecurityConfig {
 
         //form login default
         //form related changes to be made over here.
-        httpSecurity.formLogin(Customizer.withDefaults());
+        httpSecurity.formLogin(httpSecurityFormLoginConfigurer ->{
+
+            httpSecurityFormLoginConfigurer.loginPage("/login");
+            httpSecurityFormLoginConfigurer.loginProcessingUrl("/authenticate");
+            httpSecurityFormLoginConfigurer.defaultSuccessUrl("/user/dashboard");
+            //httpSecurityFormLoginConfigurer.failureForwardUrl("/login?error=true");
+            httpSecurityFormLoginConfigurer.usernameParameter("email");
+            httpSecurityFormLoginConfigurer.passwordParameter("password");
+
+
+            //if the authentication fails
+//            httpSecurityFormLoginConfigurer.failureHandler(new AuthenticationFailureHandler() {
+//                        @Override
+//                        public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+//
+//                        }
+//                    });
+//
+//            //if the authentication succeeds.
+//            httpSecurityFormLoginConfigurer.successHandler(new AuthenticationSuccessHandler() {
+//                @Override
+//                public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+//
+//                }
+//            })
+
+        });
+
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.logout(logoutForm -> {
+            logoutForm.logoutUrl("/do-logout");
+            logoutForm.logoutSuccessUrl("/login?logout=true");
+        });
 
         return httpSecurity.build();
 
