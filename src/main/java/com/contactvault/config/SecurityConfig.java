@@ -53,8 +53,10 @@ public class SecurityConfig {
 //}
 
     private final SecurityCustomUserDetailService userDetailService;
+    private final OAuthAuthenticationSuccessHandler handler;
     @Autowired
-    public SecurityConfig(SecurityCustomUserDetailService userDetailService){
+    public SecurityConfig(SecurityCustomUserDetailService userDetailService, OAuthAuthenticationSuccessHandler handler){
+        this.handler=handler;
         this.userDetailService=userDetailService;
     }
 
@@ -92,7 +94,7 @@ public class SecurityConfig {
 
             httpSecurityFormLoginConfigurer.loginPage("/login");
             httpSecurityFormLoginConfigurer.loginProcessingUrl("/authenticate");
-            httpSecurityFormLoginConfigurer.defaultSuccessUrl("/user/dashboard");
+            httpSecurityFormLoginConfigurer.defaultSuccessUrl("/user/dashboard", true);
             //httpSecurityFormLoginConfigurer.failureForwardUrl("/login?error=true");
             httpSecurityFormLoginConfigurer.usernameParameter("email");
             httpSecurityFormLoginConfigurer.passwordParameter("password");
@@ -122,11 +124,16 @@ public class SecurityConfig {
             logoutForm.logoutSuccessUrl("/login?logout=true");
         });
 
+        //Oauth Configurations
+        httpSecurity.oauth2Login(httpSecurityOAuth2LoginConfigurer -> {
+            httpSecurityOAuth2LoginConfigurer.loginPage("/login");
+            httpSecurityOAuth2LoginConfigurer.successHandler(handler);
+
+        });
+
+
+
         return httpSecurity.build();
 
     }
-
-
-
-
 }

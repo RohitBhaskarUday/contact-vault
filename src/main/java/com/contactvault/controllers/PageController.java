@@ -56,13 +56,14 @@ public class PageController {
         return "contact";
     }
 
-
+//this is actually the registration controller  -- view
     @GetMapping("/login")
     public String login(){
         System.out.println("contact us page loading");
         return "login";
     }
 
+    //process registration
     @GetMapping(value = "/register")
     public String register(Model model){
 
@@ -75,7 +76,6 @@ public class PageController {
     }
 
     //processing the register
-
     @PostMapping(value = "/do-register")
     public String processRegister(@Valid @ModelAttribute UserForm userForm, BindingResult rBindingResult, HttpSession session){
         System.out.println("processing the registered user");
