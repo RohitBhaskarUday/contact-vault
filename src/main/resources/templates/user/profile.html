@@ -10,6 +10,10 @@
 <body>
 
 <h1>This is the profile page</h1>
+<h1 data-th-text="${loggedInUser.getName()}"></h1>
+<h1 data-th-text="${loggedInUser.getEmail()}"></h1>
+
+<h1 data-th-if="${loggedInUser}"> The user is Logged IN</h1>
 
 </body>
 </html>

@@ -56,14 +56,14 @@ public class PageController {
         return "contact";
     }
 
-//this is actually the registration controller  -- view
+//this is the login controller
     @GetMapping("/login")
     public String login(){
         System.out.println("contact us page loading");
         return "login";
     }
 
-    //process registration
+    //this is actually the registration controller  -- view
     @GetMapping(value = "/register")
     public String register(Model model){
 
