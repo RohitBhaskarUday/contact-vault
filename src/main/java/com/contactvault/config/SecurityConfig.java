@@ -94,7 +94,7 @@ public class SecurityConfig {
 
             httpSecurityFormLoginConfigurer.loginPage("/login");
             httpSecurityFormLoginConfigurer.loginProcessingUrl("/authenticate");
-            httpSecurityFormLoginConfigurer.defaultSuccessUrl("/user/dashboard", true);
+            httpSecurityFormLoginConfigurer.defaultSuccessUrl("/user/profile");
             //httpSecurityFormLoginConfigurer.failureForwardUrl("/login?error=true");
             httpSecurityFormLoginConfigurer.usernameParameter("email");
             httpSecurityFormLoginConfigurer.passwordParameter("password");
@@ -118,17 +118,17 @@ public class SecurityConfig {
 
         });
 
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.logout(logoutForm -> {
-            logoutForm.logoutUrl("/do-logout");
-            logoutForm.logoutSuccessUrl("/login?logout=true");
-        });
-
         //Oauth Configurations
         httpSecurity.oauth2Login(httpSecurityOAuth2LoginConfigurer -> {
             httpSecurityOAuth2LoginConfigurer.loginPage("/login");
             httpSecurityOAuth2LoginConfigurer.successHandler(handler);
 
+        });
+
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.logout(logoutForm -> {
+            logoutForm.logoutUrl("/do-logout");
+            logoutForm.logoutSuccessUrl("/login?logout=true");
         });
 
 
