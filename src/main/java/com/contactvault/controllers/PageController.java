@@ -84,33 +84,38 @@ public class PageController {
         System.out.println(userForm);
         //validate the form data
         if(rBindingResult.hasErrors()){
+            Message msg = Message.builder().content("Error, Please provide valid inputs").type(MessageType.red).build();
+            session.setAttribute("message", msg);
             return "register";
+        }else {
+
+            //save it to the db.
+
+
+            //user service
+
+            //extract from userForm to the User
+            User user = new User();
+
+            user.setName(userForm.getName());
+            user.setEmail(userForm.getEmail());
+            user.setPassword(userForm.getPassword());
+            user.setAbout(userForm.getAbout());
+            user.setPhoneNumber(userForm.getPhoneNumber());
+            user.setProfilePicture("default.png");
+
+            User saveUser = userService.saveUser(user);
+            System.out.println("user saved");
+
+            //message = "Registration successful"
+            Message msg = Message.builder().content("Registration Successful").type(MessageType.green).build();
+            session.setAttribute("message", msg);
+
+            //redirect to the login page.
+            return "redirect:/register";
         }
 
-        //save it to the db.
 
 
-        //user service
-
-        //extract from userForm to the User
-        User user = new User();
-
-        user.setName(userForm.getName());
-        user.setEmail(userForm.getEmail());
-        user.setPassword(userForm.getPassword());
-        user.setAbout(userForm.getAbout());
-        user.setPhoneNumber(userForm.getPhoneNumber());
-        user.setProfilePicture("default.png");
-
-        User saveUser = userService.saveUser(user);
-        System.out.println("user saved");
-
-        //message = "Registration successful"
-        Message msg = Message.builder().content("Registration Successful").type(MessageType.GREEN).build();
-        session.setAttribute("message", msg);
-
-
-        //redirect to the login page.
-        return "redirect:/register";
     }
 }
