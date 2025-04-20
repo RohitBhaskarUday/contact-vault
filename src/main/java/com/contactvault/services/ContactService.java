@@ -1,6 +1,7 @@
 package com.contactvault.services;
 
 import com.contactvault.entities.Contact;
+import com.contactvault.entities.User;
 
 import java.util.List;
 
@@ -19,5 +20,7 @@ public interface ContactService {
     List<Contact> search(String name, String email, String phoneNumber);
 
     List<Contact> getByUserId(String userId);
+
+    List<Contact> getByUser(User user);
 
 }

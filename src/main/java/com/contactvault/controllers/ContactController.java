@@ -19,10 +19,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -52,6 +54,7 @@ public class ContactController {
         return "user/add_contact";
     }
 
+    //add contacts and save
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String saveContact(@Valid @ModelAttribute ContactForm contactForm, BindingResult bindingResult,
                               Authentication authentication, HttpSession httpSession){
@@ -95,7 +98,6 @@ public class ContactController {
 
         }
 
-
         Message msg = Message.builder()
                 .content("You have successfully added a new contact!").type(MessageType.green)
                 .build();
@@ -107,4 +109,17 @@ public class ContactController {
         return "redirect:/user/contact/add";
     }
 
+    //view contacts
+    @RequestMapping
+    public String viewContacts(Model model, Authentication authentication){
+        //first know who the logged-in User is.
+        String loggedInUser = Helper.getEmailOfLoggedInUser(authentication);
+        User userName = userService.getUserByEmail(loggedInUser);
+
+        //load all the currently logged-in user contacts
+        List<Contact> contactList = contactService.getByUser(userName);
+        model.addAttribute("contacts", contactList);
+
+        return "user/contact";
+    }
 }

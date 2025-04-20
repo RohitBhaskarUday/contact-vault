@@ -1,6 +1,7 @@
 package com.contactvault.services.impl;
 
 import com.contactvault.entities.Contact;
+import com.contactvault.entities.User;
 import com.contactvault.forms.ContactForm;
 import com.contactvault.helpers.ResourceNotFoundException;
 import com.contactvault.repositories.ContactRepository;
@@ -64,5 +65,10 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public List<Contact> getByUserId(String userId) {
         return contactRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<Contact> getByUser(User user) {
+        return contactRepository.findByUser(user);
     }
 }
