@@ -6,7 +6,8 @@ public enum Constants {
     ROLE_USER,
     CONTACT_IMAGE_WIDTH(500),
     CONTACT_IMAGE_HEIGHT(500),
-    CONTACT_IMAGE_CROP("fill");
+    CONTACT_IMAGE_CROP("fill"),
+    PAGE_SIZE("10");
 
     private Integer intValue;
     private String stringValue;
@@ -15,8 +16,11 @@ public enum Constants {
     Constants(){
     }
     Constants(int value) {
+        this.intValue = value;
     }
-    Constants(String value){
+
+    Constants(String value) {
+        this.stringValue = value;
     }
 
     public Integer getIntValue() {

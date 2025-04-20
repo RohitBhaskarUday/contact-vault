@@ -4,6 +4,7 @@ package com.contactvault.controllers;
 import com.contactvault.entities.Contact;
 import com.contactvault.entities.User;
 import com.contactvault.forms.ContactForm;
+import com.contactvault.helpers.Constants;
 import com.contactvault.helpers.Helper;
 import com.contactvault.helpers.Message;
 import com.contactvault.helpers.MessageType;
@@ -15,14 +16,12 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -111,14 +110,19 @@ public class ContactController {
 
     //view contacts
     @RequestMapping
-    public String viewContacts(Model model, Authentication authentication){
+    public String viewContacts(@RequestParam(value = "page", defaultValue = "0") int page,
+                               @RequestParam(value = "size", defaultValue = "10") int size,
+                               @RequestParam(value = "sortBy", defaultValue = "name") String sortBy,
+                               @RequestParam(value = "direction", defaultValue = "asc") String direction,
+                               Model model, Authentication authentication
+                               ){
         //first know who the logged-in User is.
         String loggedInUser = Helper.getEmailOfLoggedInUser(authentication);
         User userName = userService.getUserByEmail(loggedInUser);
 
         //load all the currently logged-in user contacts
-        List<Contact> contactList = contactService.getByUser(userName);
-        model.addAttribute("contacts", contactList);
+        Page<Contact> contactPage = contactService.getByUser(userName, page, size, sortBy, direction);
+        model.addAttribute("contactPage", contactPage);
 
         return "user/contact";
     }
