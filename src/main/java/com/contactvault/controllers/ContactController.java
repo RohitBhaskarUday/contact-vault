@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.UUID;
+
 @Controller
 @RequestMapping("/user/contact")
 public class ContactController {
@@ -54,36 +56,12 @@ public class ContactController {
     public String saveContact(@Valid @ModelAttribute ContactForm contactForm, BindingResult bindingResult,
                               Authentication authentication, HttpSession httpSession){
         System.out.println("COntact form "+contactForm);
-
         String userName = Helper.getEmailOfLoggedInUser(authentication);
-
-
-
-        //Extract the from to the Contact Object;
-        User user = userService.getUserByEmail(userName);
-
-
-        //image processing
-        logger.info("file information : {}", contactForm.getContactImage().getOriginalFilename());
-
-        String fileURL = imageService.uploadImage(contactForm.getContactImage());
-
-
-
-
-        Contact contactDetails = new Contact();
-        contactDetails.setName(contactForm.getName());
-        contactDetails.setEmail(contactForm.getEmail());
-        contactDetails.setPhoneNumber(contactForm.getPhoneNumber());
-        contactDetails.setAddress(contactForm.getAddress());
-        contactDetails.setDescription(contactForm.getDescription());
-        contactDetails.setWebsiteLink(contactForm.getWebsiteLink());
-        contactDetails.setLinkedInLink(contactForm.getLinkedInLink());
-        contactDetails.setUser(user);
-        contactDetails.setFavorite(contactForm.isFavorite());
 
         //validate the form data
         if(bindingResult.hasErrors()){
+
+            bindingResult.getAllErrors().forEach(error -> logger.info(error.toString()));
 
             Message msg = Message.builder()
                     .content("Please provide valid inputs.")
@@ -93,16 +71,39 @@ public class ContactController {
             return "user/add_contact";
         }
 
+        //Extract the form to the Contact Object;
+        logger.info("file information : {}", contactForm.getContactImage().getOriginalFilename());
+
+        Contact contactDetails = new Contact();
+
+        contactDetails.setName(contactForm.getName());
+        contactDetails.setEmail(contactForm.getEmail());
+        contactDetails.setPhoneNumber(contactForm.getPhoneNumber());
+        contactDetails.setAddress(contactForm.getAddress());
+        contactDetails.setDescription(contactForm.getDescription());
+        contactDetails.setWebsiteLink(contactForm.getWebsiteLink());
+        contactDetails.setLinkedInLink(contactForm.getLinkedInLink());
+        contactDetails.setUser(userService.getUserByEmail(userName));
+        contactDetails.setFavorite(contactForm.isFavorite());
+
+        //process the image
+        if (contactForm.getContactImage() != null && !contactForm.getContactImage().isEmpty()) {
+            String filename = UUID.randomUUID().toString();
+            String fileURL = imageService.uploadImage(contactForm.getContactImage(), filename);
+            contactDetails.setPicture(fileURL);
+            contactDetails.setCloudinaryImagePublicId(filename);
+
+        }
+
+
         Message msg = Message.builder()
                 .content("You have successfully added a new contact!").type(MessageType.green)
                 .build();
         httpSession.setAttribute("message", msg);
 
 
-
         //process the data to DB
-        //contactService.save(contactDetails);
-
+        contactService.save(contactDetails);
         return "redirect:/user/contact/add";
     }
 

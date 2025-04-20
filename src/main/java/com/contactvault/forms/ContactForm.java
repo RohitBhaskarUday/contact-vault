@@ -1,6 +1,8 @@
 package com.contactvault.forms;
 
 
+import com.contactvault.validators.ValidFile;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -37,6 +39,7 @@ public class ContactForm {
 
     //should create a custom annotation which will validate our file
     //size and resolution
+    @ValidFile(message = "Invalid File")
     private MultipartFile contactImage;
 
 }

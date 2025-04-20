@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title data-th-replace="${title}">Contact Vault</title>
+    <title th:replace="${title}">Contact Vault</title>
 
     <link rel="stylesheet" data-th-href="@{'/css/output.css'}" />
     <link rel="stylesheet" data-th-href="@{'/css/style.css'}" />
@@ -28,15 +28,15 @@
 </div>
 
 <!--Main content-->
-<div>
-    <section data-th-replace="${content}"></section>
+<div class="pt-20">
+    <section th:replace="${content}"></section>
 </div>
 <!--common footer-->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script data-th-src="@{'/js/script.js'}"></script>
-<th:block data-th-replace="${script}"></th:block>
+<th:block th:replace="${script}"></th:block>
 
 
 </body>

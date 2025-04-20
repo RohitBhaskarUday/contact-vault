@@ -28,10 +28,9 @@ public class Contact {
     private String description;
     private boolean favorite = false;
 
-
     private String websiteLink;
     private String linkedInLink;
-
+    private String cloudinaryImagePublicId;
     //private List<String> socialLinks = new ArrayList<>();
 
     @ManyToOne

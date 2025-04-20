@@ -110,8 +110,15 @@
                     <div class="mb-3">
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" >Contact Image</label>
                         <input class="block w-full mb-5 text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                               id="image_file_input"
                                data-th-field="*{contactImage}"
                                type="file">
+                        <p th:if="${#fields.hasErrors('contactImage')}"
+                           data-th-errors="*{contactImage}"
+                           class="text-red-400 pb-3"></p>
+
+                        <img class="max-h-52 mx-auto rounded-lg shadow m-3" src="" id="upload_image_preview" alt="">
+
                     </div>
 <!--                    favourite checkbox-->
                     <div class="flex items-center mb-3">
@@ -137,6 +144,10 @@
         </div>
     </div>
 </div>
+<script data-th-src="@{'/js/admin.js'}">
+    console.log("admin js")
+
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js">
     console.log("Profile Page loaded")
