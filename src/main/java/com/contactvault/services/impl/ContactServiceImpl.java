@@ -2,14 +2,12 @@ package com.contactvault.services.impl;
 
 import com.contactvault.entities.Contact;
 import com.contactvault.entities.User;
-import com.contactvault.forms.ContactForm;
 import com.contactvault.helpers.ResourceNotFoundException;
 import com.contactvault.repositories.ContactRepository;
 import com.contactvault.services.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -61,9 +59,31 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public List<Contact> search(String name, String email, String phoneNumber) {
-        //TODO;
-        return List.of();
+    public Page<Contact> searchByName(String nameKeyword, int size, int page, String sortBy, String direction, User user) {
+        Sort sort = direction.equals("desc")?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+        var pageable = PageRequest.of(page, size, sort);
+        return contactRepository.findByUserAndNameContaining( user, nameKeyword, pageable);
+
+    }
+
+    @Override
+    public Page<Contact> searchByEmail(String emailKeyword, int size, int page, String sortBy, String direction, User user) {
+        Sort sort = direction.equals("desc")?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+        var pageable = PageRequest.of(page, size, sort);
+        return contactRepository.findByUserAndEmailContaining(user, emailKeyword, pageable);
+    }
+
+    @Override
+    public Page<Contact> searchByPhoneNumber(String phoneNumber, int size, int page, String sortBy, String direction, User user) {
+        Sort sort = direction.equals("desc")?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+        var pageable = PageRequest.of(page, size, sort);
+        return contactRepository.findByUserAndPhoneNumberContaining( user, phoneNumber, pageable);
     }
 
     @Override

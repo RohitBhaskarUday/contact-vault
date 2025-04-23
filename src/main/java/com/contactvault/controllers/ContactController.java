@@ -4,7 +4,7 @@ package com.contactvault.controllers;
 import com.contactvault.entities.Contact;
 import com.contactvault.entities.User;
 import com.contactvault.forms.ContactForm;
-import com.contactvault.helpers.Constants;
+import com.contactvault.forms.ContactSearchForm;
 import com.contactvault.helpers.Helper;
 import com.contactvault.helpers.Message;
 import com.contactvault.helpers.MessageType;
@@ -23,7 +23,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -119,11 +118,40 @@ public class ContactController {
         //first know who the logged-in User is.
         String loggedInUser = Helper.getEmailOfLoggedInUser(authentication);
         User userName = userService.getUserByEmail(loggedInUser);
-
         //load all the currently logged-in user contacts
         Page<Contact> contactPage = contactService.getByUser(userName, page, size, sortBy, direction);
         model.addAttribute("contactPage", contactPage);
-
+        model.addAttribute("contactSearchForm", new ContactSearchForm());
         return "user/contact";
     }
+
+    //search Handler
+    @GetMapping("/search")
+    public String searchHandler(@ModelAttribute ContactSearchForm contactSearchForm,
+                                @RequestParam(value = "page", defaultValue = "0") int page,
+                                @RequestParam(value = "size", defaultValue = "10") int size,
+                                @RequestParam(value = "sortBy", defaultValue = "name") String sortBy,
+                                @RequestParam(value = "direction", defaultValue = "asc") String direction,
+                                Model model, Authentication authentication){
+        logger.info("field {} keyword {}", contactSearchForm.getField(), contactSearchForm.getValue() );
+
+        User user = userService.getUserByEmail(Helper.getEmailOfLoggedInUser(authentication));
+
+
+
+        Page<Contact> contactPage = null;
+        if(contactSearchForm.getField().equalsIgnoreCase("name")){
+            contactPage = contactService.searchByName(contactSearchForm.getValue(),size, page, sortBy, direction, user);
+        }else if(contactSearchForm.getField().equalsIgnoreCase("email")){
+            contactPage = contactService.searchByEmail(contactSearchForm.getValue(),size, page, sortBy, direction, user);
+        }else if(contactSearchForm.getField().equalsIgnoreCase("phone")){
+            contactPage = contactService.searchByPhoneNumber(contactSearchForm.getValue(),size, page, sortBy, direction, user);
+        }
+
+        logger.info("contactPage {} ", contactPage);
+        model.addAttribute("contactSearchForm", contactSearchForm);
+        model.addAttribute("contactPage", contactPage);
+        return "user/search";
+    }
+
 }
