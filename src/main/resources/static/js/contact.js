@@ -1,5 +1,6 @@
 console.log("contact loaded")
 const viewContactModel = document.getElementById('view_contact_modal');
+const baseURL = "http://localhost:8811";
 
 const modalOptions = {
     placement: 'bottom-right',
@@ -37,7 +38,7 @@ async function loadContactData(id){
     console.log(id)
     //function call to load data
     try{
-        const data = await (await fetch(`http://localhost:8811/api/contact/${id}`)).json();
+        const data = await (await fetch(`${baseURL}/api/contact/${id}`)).json();
         console.log(data);
         document.querySelector("#contact_name").innerHTML=data.name;
         document.querySelector("#contact_email").innerHTML=data.email;
@@ -62,4 +63,23 @@ async function loadContactData(id){
     }catch (error){
         console.log(data);
     }
+}
+
+
+//delete contact
+async function deleteContact(id){
+    Swal.fire({
+        title: "Do you want to delete the contact?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const url = `${baseURL}/user/contact/delete/` + id;
+            window.location.replace(url);
+        }
+    });
 }
