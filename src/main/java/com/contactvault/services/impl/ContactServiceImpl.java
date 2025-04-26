@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-@Component
 @Service
 public class ContactServiceImpl implements ContactService {
 
@@ -45,7 +44,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public Contact getContactById(String id) {
+    public Contact getById(String id) {
         return contactRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Contact not found"));
     }

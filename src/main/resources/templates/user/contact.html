@@ -90,7 +90,8 @@
                                 <div>
                                     <a><i class="fa-solid fa-trash w-6 h-6"></i></a>
                                     <a> <i class="fa-solid fa-pen  w-6 h-6"></i></a>
-                                    <a> <i class="fa-solid fa-eye  w-6 h-6"></i></a>
+                                    <button th:data-id="${c.id}" th:onclick="loadContactData(this.getAttribute('data-id'))"> <i class="fa-solid fa-eye  w-6 h-6"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -181,10 +182,16 @@
             </div>
 
         </div>
+        <div data-th-replace="~{user/contact_models.html :: contact}"> </div>
+
+        </div>
 
     </div>
-</div>
 
+
+
+<script data-th-src="@{'/js/contact.js'}">
+</script>
 <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js">
     console.log("Profile Page loaded")
 </script>
