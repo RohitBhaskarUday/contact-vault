@@ -11,15 +11,26 @@
 
 
 <div id="content">
-
 <!--    sidebar-->
     <div th:if="${loggedInUser}">
         <div data-th-replace="~{user/sidebar :: sidebar}"></div>
     </div>
 
 <div  class="text-6xl sm:pl-64 pt-20" style="height:1000px">
-    <div class="flex justify-center flex-col items-center">
-    <h1>Welcome to this page, </h1> <h1 data-th-text="${loggedInUser.name}"></h1>
+    <div class="flex flex-col items-center text-center space-y-2">
+        <h1 class="text-4xl font-extra bold tracking-tight">
+            🚀 Welcome to <span class="text-primary-600">Contact Vault</span>,
+        </h1>
+
+        <!-- user name -->
+        <h2 class="text-3xl font-semibold" data-th-text="${loggedInUser.name}">Your Name</h2>
+
+        <!-- app elevator-pitch -->
+        <p class="max-w-xl text-lg text-gray-600 dark:text-gray-400">
+            Your secure, AI-powered hub for managing contacts, crafting blogs, and
+            discovering insights—all in one smooth, Spring Boot–driven experience.
+        </p>
+
     </div>
 
 </div>

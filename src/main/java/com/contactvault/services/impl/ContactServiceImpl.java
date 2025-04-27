@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +34,23 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public Contact update(Contact contact) {
         //TODO
-        return null;
+        var updatedContactDetails =contactRepository.findById(contact.getId())
+                .orElseThrow(()-> new ResourceNotFoundException("Contact not found"));
+
+        updatedContactDetails.setName(contact.getName());
+        updatedContactDetails.setEmail(contact.getEmail());
+        updatedContactDetails.setPhoneNumber(contact.getPhoneNumber());
+        updatedContactDetails.setAddress(contact.getAddress());
+        updatedContactDetails.setDescription(contact.getDescription());
+        updatedContactDetails.setFavorite(contact.isFavorite());
+        updatedContactDetails.setPicture(contact.getPicture());
+        updatedContactDetails.setWebsiteLink(contact.getWebsiteLink());
+        updatedContactDetails.setLinkedInLink(contact.getLinkedInLink());
+        updatedContactDetails.setCloudinaryImagePublicId(contact.getCloudinaryImagePublicId());
+
+
+        return contactRepository.save(updatedContactDetails);
+
     }
 
     @Override

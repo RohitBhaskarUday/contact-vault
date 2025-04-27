@@ -18,10 +18,10 @@ public class FileValidator implements ConstraintValidator<ValidFile, MultipartFi
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext constraintValidatorContext) {
 
         if(multipartFile == null || multipartFile.isEmpty()){
-            constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("File cannot be Empty")
-                    .addConstraintViolation();
-            return  false;
+//            constraintValidatorContext.disableDefaultConstraintViolation();
+//            constraintValidatorContext.buildConstraintViolationWithTemplate("File cannot be Empty")
+//                    .addConstraintViolation();
+            return true;
         }
         //file size
         if(multipartFile.getSize()>MAX_FILE_SIZE){

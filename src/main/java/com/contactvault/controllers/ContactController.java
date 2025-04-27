@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -171,4 +172,73 @@ public class ContactController {
     }
 
     //update contact
+    @GetMapping("/view/{contactId}")
+    public String updateContactFormView(@PathVariable String contactId,
+                                        Model model){
+
+        var contact = contactService.getById(contactId);
+        ContactForm contactForm = new ContactForm();
+        contactForm.setName(contact.getName());
+        contactForm.setEmail(contact.getEmail());
+        contactForm.setPhoneNumber(contact.getPhoneNumber());
+        contactForm.setAddress(contact.getAddress());
+        contactForm.setDescription(contact.getDescription());
+        contactForm.setFavorite(contact.isFavorite());
+        contactForm.setWebsiteLink(contact.getWebsiteLink());
+        contactForm.setLinkedInLink(contact.getLinkedInLink());
+        contactForm.setPicture(contact.getPicture());
+
+        model.addAttribute("contactForm", contactForm);
+        model.addAttribute("contactId", contactId);
+        return "user/update_contact_view";
+    }
+
+    @PostMapping("/update/{contactId}")
+    public String updateContact(@PathVariable String contactId,
+                                @Valid @ModelAttribute ContactForm contactForm,
+                                BindingResult bindingResult,
+                                Model model){
+
+        if(bindingResult.hasErrors()){
+            return "user/update_contact_view";
+        }
+
+
+        Contact updateContactDetails = contactService.getById(contactId);
+        updateContactDetails.setId(contactId);
+        updateContactDetails.setName(contactForm.getName());
+        updateContactDetails.setEmail(contactForm.getEmail());
+        updateContactDetails.setPhoneNumber(contactForm.getPhoneNumber());
+        updateContactDetails.setAddress(contactForm.getAddress());
+        updateContactDetails.setDescription(contactForm.getDescription());
+        updateContactDetails.setFavorite(contactForm.isFavorite());
+        updateContactDetails.setWebsiteLink(contactForm.getWebsiteLink());
+        updateContactDetails.setLinkedInLink(contactForm.getLinkedInLink());
+
+       if(contactForm.getContactImage() != null && !contactForm.getContactImage().isEmpty()){
+           //process image
+           logger.info("file is not empty");
+           String fileName = UUID.randomUUID().toString();
+           String imageURL= imageService.uploadImage(contactForm.getContactImage(), contactId);
+           updateContactDetails.setCloudinaryImagePublicId(fileName);
+           updateContactDetails.setPicture(imageURL);
+           //for changing the image in Front-End
+           contactForm.setPicture(imageURL);
+
+
+       }
+
+        var updatedDetails = contactService.update(updateContactDetails);
+        logger.info("updated contact {}", updatedDetails);
+
+        //message after success
+        model.addAttribute("message", Message.builder()
+                .content("Your Contact has been updated")
+                .type(MessageType.green).build());
+
+
+
+        return "redirect:/user/contact/view/"+contactId;
+    }
+
 }
